@@ -900,9 +900,9 @@ function updatePlayer(delta) {
         movement.normalize();
 
         const currentSpeed =
-            keys["shift"]
-                ? player.sprintSpeed
-                : player.speed;
+    keys["control"]
+        ? player.sprintSpeed
+        : player.speed;
 
         player.position.addScaledVector(
             movement,
