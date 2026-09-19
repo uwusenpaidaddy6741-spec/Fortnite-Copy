@@ -1815,16 +1815,18 @@ window.addEventListener(
         keys[key] = true;
 
 
-        if (
-            key === "r"
-        ) {
+        // Reload
+        if (key === "r") {
+            event.preventDefault();
             reload();
         }
 
 
+        // Prevent browser shortcuts while playing
         if (
             key === " " ||
             key === "control" ||
+            key === "r" ||
             key.startsWith("arrow") ||
             key === "w" ||
             key === "a" ||
@@ -1847,7 +1849,6 @@ window.addEventListener(
         keys[key] = false;
     }
 );
-
 
 // ========================================================
 // MOUSE
