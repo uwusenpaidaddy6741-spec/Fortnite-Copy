@@ -1,1 +1,458 @@
+```css
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #111;
+}
+
+body {
+    user-select: none;
+}
+
+#gameCanvasContainer {
+    position: relative;
+
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+}
+
+#gameCanvas {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+}
+
+/* =========================
+   CROSSHAIR
+========================= */
+
+#crosshair {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 30px;
+    height: 30px;
+
+    transform: translate(-50%, -50%);
+
+    pointer-events: none;
+}
+
+#crosshair span {
+    position: absolute;
+
+    background: white;
+
+    box-shadow: 0 0 3px black;
+}
+
+#crosshair span:nth-child(1) {
+    width: 10px;
+    height: 2px;
+
+    left: 0;
+    top: 14px;
+}
+
+#crosshair span:nth-child(2) {
+    width: 10px;
+    height: 2px;
+
+    right: 0;
+    top: 14px;
+}
+
+#crosshair span:nth-child(3) {
+    width: 2px;
+    height: 10px;
+
+    left: 14px;
+    top: 0;
+}
+
+#crosshair span:nth-child(4) {
+    width: 2px;
+    height: 10px;
+
+    left: 14px;
+    bottom: 0;
+}
+
+/* =========================
+   HUD
+========================= */
+
+#hud {
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+}
+
+#topLeft {
+    position: absolute;
+
+    top: 20px;
+    left: 20px;
+
+    width: 230px;
+}
+
+.hudBox {
+    margin-bottom: 10px;
+
+    padding: 8px 10px;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    border-radius: 5px;
+}
+
+.hudTitle {
+    color: white;
+
+    font-size: 12px;
+    font-weight: bold;
+
+    margin-bottom: 5px;
+}
+
+.bar {
+    width: 100%;
+    height: 12px;
+
+    background: #292929;
+
+    border: 1px solid #111;
+
+    overflow: hidden;
+}
+
+#healthBar {
+    width: 100%;
+    height: 100%;
+
+    background: #31d158;
+
+    transition: width 0.15s;
+}
+
+#shieldBar {
+    width: 100%;
+    height: 100%;
+
+    background: #2389ff;
+
+    transition: width 0.15s;
+}
+
+#healthText,
+#shieldText {
+    color: white;
+
+    font-size: 11px;
+
+    margin-top: 4px;
+}
+
+#topRight {
+    position: absolute;
+
+    top: 20px;
+    right: 20px;
+
+    display: flex;
+
+    gap: 10px;
+}
+
+.statBox {
+    min-width: 90px;
+
+    padding: 8px 12px;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    border-radius: 5px;
+
+    text-align: center;
+
+    color: white;
+}
+
+.statBox span {
+    display: block;
+
+    font-size: 10px;
+}
+
+.statBox strong {
+    display: block;
+
+    font-size: 20px;
+
+    margin-top: 2px;
+}
+
+/* =========================
+   WEAPON
+========================= */
+
+#weaponHud {
+    position: absolute;
+
+    right: 30px;
+    bottom: 65px;
+
+    min-width: 230px;
+
+    padding: 12px 18px;
+
+    color: white;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    border-radius: 6px;
+
+    text-align: right;
+}
+
+#weaponName {
+    font-size: 13px;
+    font-weight: bold;
+
+    letter-spacing: 2px;
+}
+
+#ammo {
+    margin-top: 3px;
+
+    font-size: 34px;
+    font-weight: bold;
+}
+
+.ammoDivider {
+    opacity: 0.5;
+}
+
+#reloadText {
+    font-size: 10px;
+
+    opacity: 0.65;
+}
+
+/* =========================
+   CONTROLS
+========================= */
+
+#controls {
+    position: absolute;
+
+    left: 50%;
+    bottom: 15px;
+
+    transform: translateX(-50%);
+
+    padding: 7px 12px;
+
+    background: rgba(0, 0, 0, 0.45);
+
+    color: rgba(255, 255, 255, 0.8);
+
+    font-size: 11px;
+
+    white-space: nowrap;
+}
+
+/* =========================
+   MESSAGE
+========================= */
+
+#message {
+    position: absolute;
+
+    top: 22%;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    color: white;
+
+    font-size: 22px;
+    font-weight: bold;
+
+    text-shadow:
+        0 2px 5px black,
+        0 0 10px black;
+
+    opacity: 0;
+
+    transition: opacity 0.2s;
+
+    text-align: center;
+}
+
+/* =========================
+   START / END SCREENS
+========================= */
+
+#startScreen,
+#endScreen {
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(20, 40, 70, 0.55),
+            rgba(0, 0, 0, 0.9)
+        );
+
+    z-index: 20;
+}
+
+#endScreen {
+    display: none;
+}
+
+.menu {
+    width: min(90%, 650px);
+
+    padding: 50px;
+
+    text-align: center;
+
+    color: white;
+
+    background: rgba(5, 8, 15, 0.88);
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    box-shadow: 0 20px 70px rgba(0, 0, 0, 0.65);
+
+    border-radius: 10px;
+}
+
+.menu h1 {
+    font-size: clamp(40px, 7vw, 80px);
+
+    letter-spacing: 5px;
+
+    margin-bottom: 15px;
+}
+
+.subtitle {
+    font-size: 13px;
+
+    color: #bbb;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 35px;
+}
+
+.menu button {
+    padding: 15px 45px;
+
+    border: none;
+    border-radius: 5px;
+
+    background: #2389ff;
+
+    color: white;
+
+    font-size: 17px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s,
+        background 0.15s;
+}
+
+.menu button:hover {
+    background: #45a0ff;
+
+    transform: scale(1.04);
+}
+
+.smallText {
+    margin-top: 20px;
+
+    color: #777;
+
+    font-size: 11px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+
+    #topRight {
+        top: auto;
+        bottom: 70px;
+        right: 10px;
+
+        transform: scale(0.8);
+        transform-origin: bottom right;
+    }
+
+    #topLeft {
+        top: 10px;
+        left: 10px;
+
+        width: 180px;
+
+        transform: scale(0.85);
+        transform-origin: top left;
+    }
+
+    #weaponHud {
+        right: 10px;
+        bottom: 120px;
+
+        transform: scale(0.8);
+        transform-origin: bottom right;
+    }
+
+    #controls {
+        display: none;
+    }
+
+    .menu {
+        padding: 30px 20px;
+    }
+}
+```
 
