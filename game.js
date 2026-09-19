@@ -1911,9 +1911,9 @@ document.addEventListener(
         }
 
 
-        yaw -=
-            event.movementX *
-            0.0025;
+        yaw +=
+    event.movementX *
+    0.0025;
 
 
         pitch -=
@@ -1922,11 +1922,11 @@ document.addEventListener(
 
 
         pitch =
-            THREE.MathUtils.clamp(
-                pitch,
-                -1.0,
-                0.35
-            );
+    THREE.MathUtils.clamp(
+        pitch,
+        -1.2,
+        1.25
+    );
     }
 );
 
