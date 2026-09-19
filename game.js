@@ -1824,7 +1824,12 @@ window.addEventListener(
 
         if (
             key === " " ||
-            key.startsWith("arrow")
+            key === "control" ||
+            key.startsWith("arrow") ||
+            key === "w" ||
+            key === "a" ||
+            key === "s" ||
+            key === "d"
         ) {
             event.preventDefault();
         }
