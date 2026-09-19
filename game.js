@@ -861,23 +861,22 @@ function updatePlayer(delta) {
         return;
     }
 
-
+    // Camera-relative forward direction.
+    // At yaw 0, W moves toward -Z.
     const forward = new THREE.Vector3(
         Math.sin(yaw),
         0,
-        Math.cos(yaw)
+        -Math.cos(yaw)
     );
 
+    // Camera-relative right direction.
     const right = new THREE.Vector3(
         Math.cos(yaw),
         0,
-        -Math.sin(yaw)
+        Math.sin(yaw)
     );
 
-
-    const movement =
-        new THREE.Vector3();
-
+    const movement = new THREE.Vector3();
 
     if (keys["w"]) {
         movement.add(forward);
@@ -895,7 +894,7 @@ function updatePlayer(delta) {
         movement.sub(right);
     }
 
-
+    // Move player.
     if (movement.lengthSq() > 0) {
 
         movement.normalize();
@@ -910,17 +909,14 @@ function updatePlayer(delta) {
             currentSpeed * delta
         );
 
-        player.yaw =
-            Math.atan2(
-                movement.x,
-                movement.z
-            );
-
+        // Make the player face the direction they are moving.
+        player.yaw = Math.atan2(
+            movement.x,
+            -movement.z
+        );
     }
 
-
     // Jump.
-
     if (
         keys[" "] &&
         player.grounded
@@ -932,16 +928,14 @@ function updatePlayer(delta) {
         player.grounded = false;
     }
 
-
     // Gravity.
-
     player.velocity.y -=
         25 * delta;
 
     player.position.y +=
         player.velocity.y * delta;
 
-
+    // Ground collision.
     if (player.position.y <= 0) {
 
         player.position.y = 0;
@@ -951,9 +945,7 @@ function updatePlayer(delta) {
         player.grounded = true;
     }
 
-
     // World boundary.
-
     player.position.x =
         THREE.MathUtils.clamp(
             player.position.x,
@@ -968,7 +960,7 @@ function updatePlayer(delta) {
             86
         );
 
-
+    // Update player model.
     playerGroup.position.copy(
         player.position
     );
@@ -988,43 +980,43 @@ function updateCamera(delta) {
         return;
     }
 
-
     const cameraDistance = 9;
-
     const cameraHeight = 4;
 
+    // Put the camera BEHIND the player.
+    const offset = new THREE.Vector3(
+        -Math.sin(yaw) * cameraDistance,
+        cameraHeight,
+        Math.cos(yaw) * cameraDistance
+    );
 
-    const offset =
-        new THREE.Vector3(
-            Math.sin(yaw) *
-                cameraDistance,
-
-            cameraHeight,
-
-            Math.cos(yaw) *
-                cameraDistance
-        );
-
-
-    const target =
-        player.position.clone();
+    // Camera follows the player.
+    const target = player.position.clone();
 
     target.y += 2.3;
 
+    const desiredPosition =
+        target.clone().add(offset);
 
-    const desired =
-        target.clone().add(
-            offset
-        );
-
+    // Smooth camera movement.
+    const smoothness =
+        1 - Math.pow(0.001, delta);
 
     camera.position.lerp(
-        desired,
-        1 - Math.pow(0.001, delta)
+        desiredPosition,
+        smoothness
     );
 
+    // Use pitch so the mouse can look up and down.
+    const lookTarget =
+        target.clone();
 
-    camera.lookAt(target);
+    lookTarget.y +=
+        Math.tan(pitch) * 7;
+
+    camera.lookAt(
+        lookTarget
+    );
 }
 
 
@@ -2034,13 +2026,13 @@ function animate(now) {
 
 camera.position.set(
     0,
-    7,
-    12
+    4,
+    9
 );
 
 camera.lookAt(
     0,
-    2,
+    2.3,
     0
 );
 
