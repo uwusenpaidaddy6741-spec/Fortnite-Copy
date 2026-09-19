@@ -1,1 +1,141 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Battle Royale</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="gameCanvasContainer">
+        <canvas id="gameCanvas"></canvas>
+
+        <div id="crosshair">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div id="hud">
+
+            <div id="topLeft">
+
+                <div class="hudBox">
+                    <div class="hudTitle">HEALTH</div>
+
+                    <div class="bar">
+                        <div id="healthBar"></div>
+                    </div>
+
+                    <div id="healthText">100 / 100</div>
+                </div>
+
+                <div class="hudBox">
+                    <div class="hudTitle">SHIELD</div>
+
+                    <div class="bar shieldBar">
+                        <div id="shieldBar"></div>
+                    </div>
+
+                    <div id="shieldText">50 / 50</div>
+                </div>
+
+            </div>
+
+            <div id="topRight">
+
+                <div class="statBox">
+                    <span>PLAYERS</span>
+                    <strong id="playersLeft">11</strong>
+                </div>
+
+                <div class="statBox">
+                    <span>ELIMINATIONS</span>
+                    <strong id="kills">0</strong>
+                </div>
+
+                <div class="statBox">
+                    <span>STORM</span>
+                    <strong id="stormTimer">60</strong>
+                </div>
+
+            </div>
+
+            <div id="weaponHud">
+
+                <div id="weaponName">ASSAULT RIFLE</div>
+
+                <div id="ammo">
+                    <span id="ammoCurrent">30</span>
+                    <span class="ammoDivider">/</span>
+                    <span id="ammoReserve">120</span>
+                </div>
+
+                <div id="reloadText">R TO RELOAD</div>
+
+            </div>
+
+            <div id="message"></div>
+
+            <div id="controls">
+                WASD MOVE &nbsp; | &nbsp;
+                SHIFT SPRINT &nbsp; | &nbsp;
+                SPACE JUMP &nbsp; | &nbsp;
+                LEFT CLICK SHOOT &nbsp; | &nbsp;
+                R RELOAD
+            </div>
+
+        </div>
+
+        <div id="startScreen">
+
+            <div class="menu">
+
+                <h1>BATTLE ROYALE</h1>
+
+                <p class="subtitle">
+                    SURVIVE. ELIMINATE. BE THE LAST ONE STANDING.
+                </p>
+
+                <button id="startButton">
+                    START MATCH
+                </button>
+
+                <p class="smallText">
+                    Click START MATCH and then click the game to capture your mouse.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div id="endScreen">
+
+            <div class="menu">
+
+                <h1 id="endTitle">VICTORY ROYALE!</h1>
+
+                <p id="endStats"></p>
+
+                <button id="restartButton">
+                    PLAY AGAIN
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script type="module" src="game.js"></script>
+
+</body>
+</html>
+```
 
