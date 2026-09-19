@@ -1632,28 +1632,17 @@ function updateHealthUI() {
         100;
 
 
-    document.getElementById(
-        "healthBar"
-    ).style.width =
-        `${healthPercent}%`;
+   document.getElementById("healthBar").style.width =
+    healthPercent + "%";
 
+document.getElementById("shieldBar").style.width =
+    shieldPercent + "%";
 
-    document.getElementById(
-        "shieldBar"
-    ).style.width =
-        `${shieldPercent}%`;
+document.getElementById("healthText").textContent =
+    Math.ceil(player.health) + " / " + player.maxHealth;
 
-
-    document.getElementById(
-        "healthText"
-    ).textContent =
-        `${Math.ceil(player.health)} / ${player.maxHealth}`;
-
-
-    document.getElementById(
-        "shieldText"
-    ).textContent =
-        `${Math.ceil(player.shield)} / ${player.maxShield}`;
+document.getElementById("shieldText").textContent =
+    Math.ceil(player.shield) + " / " + player.maxShield;
 }
 
 
@@ -1761,7 +1750,9 @@ function endGame(victory) {
             "VICTORY ROYALE!";
 
         stats.textContent =
-            `You eliminated all opponents with ${player.kills} eliminations.`;
+    "You eliminated all opponents with " +
+    player.kills +
+    " eliminations.";
 
     } else {
 
@@ -1769,7 +1760,9 @@ function endGame(victory) {
             "ELIMINATED";
 
         stats.textContent =
-            `You finished with ${player.kills} eliminations.`;
+    "You finished with " +
+    player.kills +
+    " eliminations.";
     }
 
 
