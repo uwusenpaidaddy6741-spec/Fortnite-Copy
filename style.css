@@ -454,5 +454,170 @@ body {
         padding: 30px 20px;
     }
 }
-```
+
+/* ========================================================
+   GAME MODE SCREEN
+   ======================================================== */
+
+#modeScreen {
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            rgba(0, 0, 0, 0.65),
+            rgba(0, 0, 0, 0.85)
+        );
+
+    z-index: 1000;
+
+    color: white;
+
+    font-family: Arial, sans-serif;
+}
+
+
+#modeScreen h1 {
+
+    font-size: 42px;
+
+    letter-spacing: 4px;
+
+    margin-bottom: 35px;
+
+    text-align: center;
+}
+
+
+#modeOptions {
+
+    display: flex;
+
+    gap: 25px;
+
+    width: min(900px, 90vw);
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+}
+
+
+.modeButton {
+
+    width: 360px;
+
+    min-height: 190px;
+
+    padding: 25px;
+
+    border: 3px solid #666;
+
+    border-radius: 12px;
+
+    background: rgba(30, 30, 30, 0.95);
+
+    color: white;
+
+    cursor: pointer;
+
+    text-align: left;
+
+    transition:
+        transform 0.15s,
+        border-color 0.15s,
+        background 0.15s;
+}
+
+
+.modeButton:hover {
+
+    transform: scale(1.04);
+
+    border-color: white;
+
+    background: rgba(50, 50, 50, 0.98);
+}
+
+
+.modeButton.selected {
+
+    border-color: #00aaff;
+
+    background: rgba(0, 100, 180, 0.35);
+
+    box-shadow:
+        0 0 20px rgba(0, 170, 255, 0.35);
+}
+
+
+.modeTitle {
+
+    display: block;
+
+    font-size: 26px;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 15px;
+}
+
+
+.modeDescription {
+
+    display: block;
+
+    font-size: 16px;
+
+    line-height: 1.5;
+
+    color: #ccc;
+}
+
+
+#modeStartButton {
+
+    margin-top: 40px;
+
+    padding: 16px 45px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #00aaff;
+
+    color: white;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s,
+        background 0.15s;
+}
+
+
+#modeStartButton:hover {
+
+    transform: scale(1.05);
+
+    background: #0088dd;
+}
 
