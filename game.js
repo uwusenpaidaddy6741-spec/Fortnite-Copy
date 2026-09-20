@@ -663,18 +663,20 @@ function createBot(index) {
     bots.push(bot);
 }
 
+function spawnBattleRoyaleBots() {
 
-if (
-    selectedGameMode ===
-    "battleRoyale"
-) {
+    // Don't create them twice
+    if (bots.length > 0) {
+        return;
+    }
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < BOT_COUNT; i++) {
 
         createBot(i);
     }
-}
 
+    updatePlayersUI();
+}
 
 // ========================================================
 // LOOT
@@ -2065,13 +2067,17 @@ function startSelectedGameMode() {
 
     gameOver = false;
 
-    // Battle Royale
+
+    // ====================================================
+    // BATTLE ROYALE
+    // ====================================================
+
     if (
         selectedGameMode ===
         "battleRoyale"
     ) {
 
-        // Your existing bots stay active.
+        spawnBattleRoyaleBots();
 
         showMessage(
             "BATTLE ROYALE"
@@ -2079,7 +2085,10 @@ function startSelectedGameMode() {
     }
 
 
-    // Practice
+    // ====================================================
+    // PRACTICE
+    // ====================================================
+
     if (
         selectedGameMode ===
         "practice"
