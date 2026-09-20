@@ -1052,81 +1052,6 @@ function updateCamera(delta) {
 
 function shoot() {
 
-    function checkWeaponHit(
-    origin,
-    direction,
-    damage
-) {
-
-    let closestBot = null;
-
-    let closestDistance =
-        Infinity;
-
-    for (const bot of bots) {
-
-        if (!bot.alive) {
-            continue;
-        }
-
-        const botPosition =
-            bot.group.position.clone();
-
-        botPosition.y += 2;
-
-        const toBot =
-            botPosition.clone().sub(
-                origin
-            );
-
-        const distance =
-            toBot.length();
-
-        toBot.normalize();
-
-        const dot =
-            direction.dot(
-                toBot
-            );
-
-        if (
-            dot > 0.985 &&
-            distance < closestDistance
-        ) {
-
-            const testRay =
-                new THREE.Raycaster(
-                    origin,
-                    toBot,
-                    0,
-                    distance
-                );
-
-            const hits =
-                testRay.intersectObject(
-                    bot.group,
-                    true
-                );
-
-            if (hits.length > 0) {
-
-                closestBot = bot;
-
-                closestDistance =
-                    distance;
-            }
-        }
-    }
-
-    if (closestBot) {
-
-        damageBot(
-            closestBot,
-            damage
-        );
-    }
-}
-
     if (
         !gameStarted ||
         gameOver ||
@@ -1211,10 +1136,6 @@ function shoot() {
 
     } else {
 
-        // =================================================
-        // NORMAL WEAPONS
-        // =================================================
-
         checkWeaponHit(
             origin,
             direction,
@@ -1223,6 +1144,82 @@ function shoot() {
     }
 
     updateAmmoUI();
+}
+
+
+function checkWeaponHit(
+    origin,
+    direction,
+    damage
+) {
+
+    let closestBot = null;
+
+    let closestDistance =
+        Infinity;
+
+    for (const bot of bots) {
+
+        if (!bot.alive) {
+            continue;
+        }
+
+        const botPosition =
+            bot.group.position.clone();
+
+        botPosition.y += 2;
+
+        const toBot =
+            botPosition.clone().sub(
+                origin
+            );
+
+        const distance =
+            toBot.length();
+
+        toBot.normalize();
+
+        const dot =
+            direction.dot(
+                toBot
+            );
+
+        if (
+            dot > 0.985 &&
+            distance < closestDistance
+        ) {
+
+            const testRay =
+                new THREE.Raycaster(
+                    origin,
+                    toBot,
+                    0,
+                    distance
+                );
+
+            const hits =
+                testRay.intersectObject(
+                    bot.group,
+                    true
+                );
+
+            if (hits.length > 0) {
+
+                closestBot = bot;
+
+                closestDistance =
+                    distance;
+            }
+        }
+    }
+
+    if (closestBot) {
+
+        damageBot(
+            closestBot,
+            damage
+        );
+    }
 }
 
 
@@ -1626,7 +1623,10 @@ function updateLoot() {
                 item.type === "ammo"
             ) {
 
-                player.reserveAmmo += 30;
+                const weapon =
+    getCurrentWeapon();
+
+weapon.reserveAmmo += 30;
 
                 showMessage(
                     "+30 AMMO"
