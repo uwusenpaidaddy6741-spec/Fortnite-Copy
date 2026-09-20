@@ -1875,17 +1875,18 @@ window.addEventListener(
 
         keys[key] = true;
 
+        // Weapon switching
         if (
-    key === "1" ||
-    key === "2" ||
-    key === "3"
-) {
+            key === "1" ||
+            key === "2" ||
+            key === "3"
+        ) {
+            event.preventDefault();
 
-    switchWeapon(
-        Number(key) - 1
-    );
-}
-
+            switchWeapon(
+                Number(key) - 1
+            );
+        }
 
         // Reload
         if (key === "r") {
@@ -1893,12 +1894,14 @@ window.addEventListener(
             reload();
         }
 
-
         // Prevent browser shortcuts while playing
         if (
             key === " " ||
             key === "control" ||
             key === "r" ||
+            key === "1" ||
+            key === "2" ||
+            key === "3" ||
             key.startsWith("arrow") ||
             key === "w" ||
             key === "a" ||
