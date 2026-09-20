@@ -116,6 +116,8 @@ scene.add(sun);
 let gameStarted = false;
 let gameOver = false;
 
+let selectedGameMode = "battleRoyale";
+
 let lastTime = performance.now();
 
 const keys = {};
@@ -662,12 +664,15 @@ function createBot(index) {
 }
 
 
-for (
-    let i = 0;
-    i < BOT_COUNT;
-    i++
+if (
+    selectedGameMode ===
+    "battleRoyale"
 ) {
-    createBot(i);
+
+    for (let i = 0; i < 10; i++) {
+
+        createBot(i);
+    }
 }
 
 
@@ -1996,18 +2001,98 @@ function startGame() {
 
     document.getElementById(
         "startScreen"
-    ).style.display =
-        "none";
+    ).style.display = "none";
 
+    document.getElementById(
+        "modeScreen"
+    ).style.display = "flex";
+}
+
+// ========================================================
+// GAME MODE SELECTION
+// ========================================================
+
+const modeButtons =
+    document.querySelectorAll(
+        ".modeButton"
+    );
+
+
+modeButtons.forEach(
+    button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                // Remove selection
+                modeButtons.forEach(
+                    otherButton => {
+
+                        otherButton.classList.remove(
+                            "selected"
+                        );
+                    }
+                );
+
+                // Select this mode
+                button.classList.add(
+                    "selected"
+                );
+
+                selectedGameMode =
+                    button.dataset.mode;
+            }
+        );
+    }
+);
+
+
+document.getElementById(
+    "modeStartButton"
+).addEventListener(
+    "click",
+    startSelectedGameMode
+);
+
+function startSelectedGameMode() {
+
+    document.getElementById(
+        "modeScreen"
+    ).style.display = "none";
 
     gameStarted = true;
 
     gameOver = false;
 
+    // Battle Royale
+    if (
+        selectedGameMode ===
+        "battleRoyale"
+    ) {
+
+        // Your existing bots stay active.
+
+        showMessage(
+            "BATTLE ROYALE"
+        );
+    }
+
+
+    // Practice
+    if (
+        selectedGameMode ===
+        "practice"
+    ) {
+
+        showMessage(
+            "PRACTICE MODE"
+        );
+    }
+
 
     canvas.requestPointerLock?.();
 }
-
 
 document.getElementById(
     "startButton"
