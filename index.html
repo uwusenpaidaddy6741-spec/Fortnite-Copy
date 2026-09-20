@@ -95,17 +95,56 @@
 
         <div id="startScreen">
 
-            <div class="menu">
+    <h1>BATTLE ROYALE</h1>
 
-                <h1>BATTLE ROYALE</h1>
+    <button id="startButton">
+        PLAY
+    </button>
 
-                <p class="subtitle">
-                    SURVIVE. ELIMINATE. BE THE LAST ONE STANDING.
-                </p>
+</div>
 
-                <button id="startButton">
-                    START MATCH
-                </button>
+
+<div id="modeScreen">
+
+    <h1>CHOOSE GAME MODE</h1>
+
+    <div id="modeOptions">
+
+        <button
+            class="modeButton selected"
+            data-mode="battleRoyale"
+        >
+            <span class="modeTitle">
+                BATTLE ROYALE
+            </span>
+
+            <span class="modeDescription">
+                Fight the bots and be the last player standing.
+            </span>
+        </button>
+
+
+        <button
+            class="modeButton"
+            data-mode="practice"
+        >
+            <span class="modeTitle">
+                PRACTICE
+            </span>
+
+            <span class="modeDescription">
+                Explore the island and practice with your weapons.
+            </span>
+        </button>
+
+    </div>
+
+
+    <button id="modeStartButton">
+        START MATCH
+    </button>
+
+</div>
 
                 <p class="smallText">
                     Click START MATCH and then click the game to capture your mouse.
