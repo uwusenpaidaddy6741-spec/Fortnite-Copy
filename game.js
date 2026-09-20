@@ -1213,15 +1213,180 @@ function checkWeaponHit(
         }
     }
 
-    if (closestBot) {
+   if (closestBot) {
 
-        damageBot(
-            closestBot,
-            damage
-        );
-    }
+    const hitPosition =
+        closestBot.group.position.clone();
+
+    hitPosition.y += 2;
+
+    createHitEffect(
+        hitPosition
+    );
+
+    damageBot(
+        closestBot,
+        damage
+    );
+}
 }
 
+// ========================================================
+// HIT EFFECTS
+// ========================================================
+
+const hitEffects = [];
+
+function createHitEffect(position) {
+
+    // Flash
+    const flashGeometry =
+        new THREE.SphereGeometry(
+            0.18,
+            8,
+            8
+        );
+
+    const flashMaterial =
+        new THREE.MeshBasicMaterial({
+            color: 0xffff00
+        });
+
+    const flash =
+        new THREE.Mesh(
+            flashGeometry,
+            flashMaterial
+        );
+
+    flash.position.copy(position);
+
+    scene.add(flash);
+
+    // Particles
+    const particles = [];
+
+    for (let i = 0; i < 8; i++) {
+
+        const particleGeometry =
+            new THREE.SphereGeometry(
+                0.04,
+                5,
+                5
+            );
+
+        const particleMaterial =
+            new THREE.MeshBasicMaterial({
+                color: 0xffaa00
+            });
+
+        const particle =
+            new THREE.Mesh(
+                particleGeometry,
+                particleMaterial
+            );
+
+        particle.position.copy(position);
+
+        particle.userData.velocity =
+            new THREE.Vector3(
+                (Math.random() - 0.5) * 3,
+                Math.random() * 3,
+                (Math.random() - 0.5) * 3
+            );
+
+        scene.add(particle);
+
+        particles.push(particle);
+    }
+
+    hitEffects.push({
+        flash: flash,
+        particles: particles,
+        life: 0,
+        maxLife: 0.15
+    });
+}
+
+function updateHitEffects(delta) {
+
+    for (
+        let i = hitEffects.length - 1;
+        i >= 0;
+        i--
+    ) {
+
+        const effect =
+            hitEffects[i];
+
+        effect.life += delta;
+
+        const progress =
+            effect.life /
+            effect.maxLife;
+
+        // Make the flash disappear
+        effect.flash.scale.setScalar(
+            1 + progress * 2
+        );
+
+        effect.flash.material.opacity =
+            1 - progress;
+
+        effect.flash.material.transparent =
+            true;
+
+        // Move particles
+        for (
+            const particle of effect.particles
+        ) {
+
+            particle.position.x +=
+                particle.userData.velocity.x *
+                delta;
+
+            particle.position.y +=
+                particle.userData.velocity.y *
+                delta;
+
+            particle.position.z +=
+                particle.userData.velocity.z *
+                delta;
+
+            particle.userData.velocity.y -=
+                8 * delta;
+
+            particle.material.opacity =
+                1 - progress;
+
+            particle.material.transparent =
+                true;
+        }
+
+        // Remove finished effect
+        if (
+            effect.life >=
+            effect.maxLife
+        ) {
+
+            scene.remove(
+                effect.flash
+            );
+
+            for (
+                const particle of effect.particles
+            ) {
+                scene.remove(
+                    particle
+                );
+            }
+
+            hitEffects.splice(
+                i,
+                1
+            );
+        }
+    }
+}
 
 // ========================================================
 // BOT DAMAGE
@@ -2112,6 +2277,8 @@ function animate(now) {
         updateBots(delta);
 
         updateStorm(delta);
+
+        updateHitEffects(delta);
 
         updateLoot();
 
