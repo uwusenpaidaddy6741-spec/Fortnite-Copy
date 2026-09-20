@@ -419,26 +419,52 @@ const player = {
 
     radius: 1.1,
 
-    ammo: 30,
+    weaponIndex: 0,
 
-    maxAmmo: 30,
+weapons: [
+    {
+        name: "ASSAULT RIFLE",
+        ammo: 30,
+        maxAmmo: 30,
+        reserveAmmo: 120,
+        damage: 25,
+        fireRate: 9,
+        reloadTime: 1.6
+    },
 
-    reserveAmmo: 120,
+    {
+        name: "SHOTGUN",
+        ammo: 5,
+        maxAmmo: 5,
+        reserveAmmo: 40,
+        damage: 12,
+        fireRate: 1.2,
+        reloadTime: 2
+    },
 
-    damage: 25,
+    {
+        name: "SMG",
+        ammo: 35,
+        maxAmmo: 35,
+        reserveAmmo: 140,
+        damage: 14,
+        fireRate: 14,
+        reloadTime: 1.5
+    }
+],
 
-    fireRate: 9,
+lastShot: 0,
 
-    lastShot: 0,
+reloading: false,
 
-    reloading: false,
-
-    reloadTime: 1.6,
-
-    reloadStart: 0,
+reloadStart: 0,
 
     kills: 0
 };
+
+function getCurrentWeapon() {
+    return player.weapons[player.weaponIndex];
+}
 
 
 // ========================================================
@@ -980,7 +1006,7 @@ function updateCamera(delta) {
         return;
     }
 
-    const cameraDistance = 9;
+    const cameraDistance = 6.5;
     const cameraHeight = 4;
 
     // Put the camera BEHIND the player.
@@ -1026,71 +1052,16 @@ function updateCamera(delta) {
 
 function shoot() {
 
-    if (
-        !gameStarted ||
-        gameOver ||
-        player.reloading
-    ) {
-        return;
-    }
-
-
-    const now = performance.now();
-
-    const shotDelay =
-        1000 /
-        player.fireRate;
-
-
-    if (
-        now -
-        player.lastShot <
-        shotDelay
-    ) {
-        return;
-    }
-
-
-    if (player.ammo <= 0) {
-
-        reload();
-
-        return;
-    }
-
-
-    player.lastShot = now;
-
-    player.ammo--;
-
-
-    const origin =
-        camera.position.clone();
-
-
-    const direction =
-        new THREE.Vector3();
-
-    camera.getWorldDirection(
-        direction
-    );
-
-
-    const raycaster =
-        new THREE.Raycaster(
-            origin,
-            direction,
-            0,
-            150
-        );
-
-
-    // Check bots.
+    function checkWeaponHit(
+    origin,
+    direction,
+    damage
+) {
 
     let closestBot = null;
 
-    let closestDistance = Infinity;
-
+    let closestDistance =
+        Infinity;
 
     for (const bot of bots) {
 
@@ -1098,38 +1069,30 @@ function shoot() {
             continue;
         }
 
-
         const botPosition =
             bot.group.position.clone();
 
         botPosition.y += 2;
-
 
         const toBot =
             botPosition.clone().sub(
                 origin
             );
 
-
         const distance =
             toBot.length();
 
-
         toBot.normalize();
-
 
         const dot =
             direction.dot(
                 toBot
             );
 
-
         if (
             dot > 0.985 &&
             distance < closestDistance
         ) {
-
-            // Basic line-of-sight check.
 
             const testRay =
                 new THREE.Raycaster(
@@ -1139,13 +1102,11 @@ function shoot() {
                     distance
                 );
 
-
             const hits =
                 testRay.intersectObject(
                     bot.group,
                     true
                 );
-
 
             if (hits.length > 0) {
 
@@ -1157,15 +1118,109 @@ function shoot() {
         }
     }
 
-
     if (closestBot) {
 
         damageBot(
             closestBot,
-            player.damage
+            damage
         );
     }
+}
 
+    if (
+        !gameStarted ||
+        gameOver ||
+        player.reloading
+    ) {
+        return;
+    }
+
+    const weapon =
+        getCurrentWeapon();
+
+    const now =
+        performance.now();
+
+    const shotDelay =
+        1000 / weapon.fireRate;
+
+    if (
+        now - player.lastShot <
+        shotDelay
+    ) {
+        return;
+    }
+
+    if (weapon.ammo <= 0) {
+
+        reload();
+
+        return;
+    }
+
+    player.lastShot = now;
+
+    weapon.ammo--;
+
+    const origin =
+        camera.position.clone();
+
+    const direction =
+        new THREE.Vector3();
+
+    camera.getWorldDirection(
+        direction
+    );
+
+    // ====================================================
+    // SHOTGUN
+    // ====================================================
+
+    if (
+        weapon.name === "SHOTGUN"
+    ) {
+
+        const pelletCount = 8;
+
+        for (
+            let i = 0;
+            i < pelletCount;
+            i++
+        ) {
+
+            const pelletDirection =
+                direction.clone();
+
+            pelletDirection.x +=
+                (Math.random() - 0.5) * 0.12;
+
+            pelletDirection.y +=
+                (Math.random() - 0.5) * 0.12;
+
+            pelletDirection.z +=
+                (Math.random() - 0.5) * 0.12;
+
+            pelletDirection.normalize();
+
+            checkWeaponHit(
+                origin,
+                pelletDirection,
+                weapon.damage
+            );
+        }
+
+    } else {
+
+        // =================================================
+        // NORMAL WEAPONS
+        // =================================================
+
+        checkWeaponHit(
+            origin,
+            direction,
+            weapon.damage
+        );
+    }
 
     updateAmmoUI();
 }
@@ -1477,22 +1532,27 @@ function damagePlayer(damage) {
 
 function reload() {
 
+    const weapon =
+        getCurrentWeapon();
+
     if (
         player.reloading ||
-        player.ammo >= player.maxAmmo ||
-        player.reserveAmmo <= 0
+        weapon.ammo >= weapon.maxAmmo ||
+        weapon.reserveAmmo <= 0
     ) {
         return;
     }
-
 
     player.reloading = true;
 
     player.reloadStart =
         performance.now();
 
-
-    showMessage("RELOADING...");
+    showMessage(
+        "RELOADING " +
+        weapon.name +
+        "..."
+    );
 }
 
 
@@ -1502,32 +1562,31 @@ function updateReload() {
         return;
     }
 
+    const weapon =
+        getCurrentWeapon();
 
     const elapsed =
         performance.now() -
         player.reloadStart;
 
-
     if (
         elapsed >=
-        player.reloadTime * 1000
+        weapon.reloadTime * 1000
     ) {
 
         const needed =
-            player.maxAmmo -
-            player.ammo;
-
+            weapon.maxAmmo -
+            weapon.ammo;
 
         const amount =
             Math.min(
                 needed,
-                player.reserveAmmo
+                weapon.reserveAmmo
             );
 
+        weapon.ammo += amount;
 
-        player.ammo += amount;
-
-        player.reserveAmmo -= amount;
+        weapon.reserveAmmo -= amount;
 
         player.reloading = false;
 
@@ -1639,16 +1698,18 @@ document.getElementById("shieldText").textContent =
 
 function updateAmmoUI() {
 
+    const weapon =
+        getCurrentWeapon();
+
     document.getElementById(
         "ammoCurrent"
     ).textContent =
-        player.ammo;
-
+        weapon.ammo;
 
     document.getElementById(
         "ammoReserve"
     ).textContent =
-        player.reserveAmmo;
+        weapon.reserveAmmo;
 }
 
 
@@ -1814,6 +1875,17 @@ window.addEventListener(
 
         keys[key] = true;
 
+        if (
+    key === "1" ||
+    key === "2" ||
+    key === "3"
+) {
+
+    switchWeapon(
+        Number(key) - 1
+    );
+}
+
 
         // Reload
         if (key === "r") {
@@ -1849,6 +1921,35 @@ window.addEventListener(
         keys[key] = false;
     }
 );
+
+function switchWeapon(index) {
+
+    if (
+        index < 0 ||
+        index >= player.weapons.length
+    ) {
+        return;
+    }
+
+    if (
+        index === player.weaponIndex
+    ) {
+        return;
+    }
+
+    player.reloading = false;
+
+    player.weaponIndex = index;
+
+    const weapon =
+        getCurrentWeapon();
+
+    showMessage(
+        weapon.name
+    );
+
+    updateAmmoUI();
+}
 
 // ========================================================
 // MOUSE
